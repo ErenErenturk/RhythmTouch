@@ -4,16 +4,19 @@ using UnityEngine;
 public class BeatMapManager : MonoBehaviour
 {
     public AudioSource musicSource;
+    public Transform circle;
     public Transform targetZone;
     public string beatmapFile = "beatmap.json";
-    public float radius = 2f;
+    public float rotationPerBeat = 30f;
+
+    public List<float> activeBeats { get; private set; } = new List<float>();
 
     private List<float> beatTimes;
     private int currentBeatIndex = 0;
+    private float totalRotation = 0f;
 
     void Start()
     {
-        // JSON'dan beat verisini yükle
         var beatData = BeatMapLoader.LoadBeatMap(beatmapFile);
         if (beatData == null)
         {
@@ -22,6 +25,7 @@ public class BeatMapManager : MonoBehaviour
         }
 
         beatTimes = beatData.beats;
+        activeBeats = beatData.beats;
         musicSource.Play();
     }
 
@@ -34,13 +38,22 @@ public class BeatMapManager : MonoBehaviour
 
         if (songTime >= beatTimes[currentBeatIndex])
         {
-            float angle = Random.Range(0f, 360f);
-            float radians = angle * Mathf.Deg2Rad;
+            totalRotation += rotationPerBeat;
 
-            Vector3 newPosition = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0) * radius;
-            targetZone.localPosition = newPosition;
+            // Mutlak rotasyon veriyoruz → kayma olmaz
+            circle.localRotation = Quaternion.Euler(0f, 0f, -totalRotation);
 
             currentBeatIndex++;
         }
     }
+
+    void LateUpdate()
+    {
+        if (targetZone != null)
+        {
+            targetZone.localPosition = new Vector3(0f, 0.5f, 0f); // zorla sabit tut
+            targetZone.localRotation = Quaternion.identity;       // açısını sıfırla
+        }
+    }
+
 }
