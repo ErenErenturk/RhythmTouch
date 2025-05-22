@@ -254,6 +254,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetZone: {fileID: 114169564}
   hitAngleThreshold: 15
+  timeThreshold: 0.2
+  musicSource: {fileID: 246930405}
+  beatMapManager: {fileID: 246930404}
   feedbackText: {fileID: 1241045852}
   scoreText: {fileID: 812685118}
 --- !u!114 &246930404
@@ -269,9 +272,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicSource: {fileID: 246930405}
-  targetZone: {fileID: 114169564}
+  circle: {fileID: 534364659}
+  targetZone: {fileID: 0}
   beatmapFile: beatmap.json
-  radius: 2
+  rotationPerBeat: 30
 --- !u!82 &246930405
 AudioSource:
   m_ObjectHideFlags: 0
