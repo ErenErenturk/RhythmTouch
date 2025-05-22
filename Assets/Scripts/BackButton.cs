@@ -1,13 +1,8 @@
 using UnityEngine;
 
-public class SettingsButtonHandler : MonoBehaviour
+public class BackButtonHandler : MonoBehaviour
 {
     public GameObject settingsPanel;
-
-    public void OnSettingsClicked()
-    {
-        settingsPanel.SetActive(true);
-    }
 
     public void OnBackButton()
     {
