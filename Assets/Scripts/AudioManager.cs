@@ -1,24 +1,31 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;  // Bunu ekle
 
 public class AudioManager : MonoBehaviour
 {
+    public AudioSource musicSource;
     public Slider volumeSlider;
+    public TMP_Text volumeValueText;  // Text yerine TMP_Text
 
     void Start()
     {
-        // Önceki ses ayarını yükle
-        float volume = PlayerPrefs.GetFloat("Volume", 1f);
-        AudioListener.volume = volume;
-        volumeSlider.value = volume;
+        float savedVolume = PlayerPrefs.GetFloat("Volume", 1f);
+        int sliderValue = Mathf.RoundToInt(savedVolume * 100);
+        volumeSlider.value = sliderValue;
 
-        // Değişim dinleme
-        volumeSlider.onValueChanged.AddListener(SetVolume);
+        UpdateVolume(sliderValue);
+        volumeSlider.onValueChanged.AddListener(UpdateVolume);
     }
 
-    void SetVolume(float value)
+    public void UpdateVolume(float sliderValue)
     {
-        AudioListener.volume = value;
-        PlayerPrefs.SetFloat("Volume", value); // Kaydet
+        float volume = sliderValue / 100f;
+        musicSource.volume = volume;
+
+        if (volumeValueText != null)
+            volumeValueText.text = ((int)sliderValue).ToString() + "%";
+
+        PlayerPrefs.SetFloat("Volume", volume);
     }
 }
