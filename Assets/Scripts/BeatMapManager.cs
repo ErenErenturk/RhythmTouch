@@ -5,20 +5,20 @@ public class BeatMapManager : MonoBehaviour
 {
     public AudioSource musicSource;
     public string beatmapFile = "beatmap.json";
+    public GameObject drumTemplate; // sahne içinden sürüklenerek atanacak
     public float spawnRadius = 3f;
     public float beatSpeed = 1.5f;
+
     public List<float> activeBeats { get; private set; } = new List<float>();
+
     private List<float> beatTimes;
     private int currentBeatIndex = 0;
-    private GameObject beatPrefab;
 
     void Start()
     {
-        beatPrefab = Resources.Load<GameObject>("BeatPrefab");
-
-        if (beatPrefab == null)
+        if (drumTemplate == null)
         {
-            Debug.LogError("BeatPrefab not found in Resources folder.");
+            Debug.LogError("DrumTemplate referansı eksik. Sahneye yerleştirip BeatMapManager'a bağlamalısın.");
             return;
         }
 
@@ -30,10 +30,9 @@ public class BeatMapManager : MonoBehaviour
         }
 
         beatTimes = beatData.beats;
-        activeBeats = beatData.beats;  // << Bu satır kritik
+        activeBeats = beatData.beats;
         musicSource.Play();
     }
-
 
     void Update()
     {
@@ -51,31 +50,18 @@ public class BeatMapManager : MonoBehaviour
 
     void SpawnBeat()
     {
-        if (beatPrefab == null)
-        {
-            Debug.LogError("beatPrefab is NULL! Make sure it's loaded from Resources.");
-            return;
-        }
-
         float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         Vector3 spawnPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * spawnRadius;
 
-        GameObject beatObj = Instantiate(beatPrefab, spawnPos, Quaternion.identity);
-
-        // Özel scale değeri
+        GameObject beatObj = Instantiate(drumTemplate, spawnPos, Quaternion.identity);
         beatObj.transform.localScale = new Vector3(0.1f, 0.1f, 1f);
-        beatObj.layer = LayerMask.NameToLayer("Default");
-        Debug.Log("SPAWNED BEAT at: " + spawnPos);
+        beatObj.name = "SpawnedBeat";
 
         BeatObject bo = beatObj.GetComponent<BeatObject>();
         if (bo != null)
         {
             bo.targetPosition = Vector3.zero;
             bo.speed = beatSpeed;
-        }
-        else
-        {
-            Debug.LogWarning("Spawned beat object does not have a BeatObject component.");
         }
     }
 }
