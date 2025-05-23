@@ -1,4 +1,0 @@
-repository "RhythmTouch/RhythmTouch@2475839459311@cloud"
-  path "/"
-    br "/main"
-    co "/main"
