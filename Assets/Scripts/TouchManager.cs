@@ -10,6 +10,7 @@ public class TouchManager : MonoBehaviour
     public TextMeshProUGUI comboText;
     public BeatMapManager beatMapManager;
     public AudioSource musicSource;
+    public HitTimingConfig timingConfig;
 
     private int score = 0;
     private int perfectCombo = 0;
@@ -35,21 +36,21 @@ public class TouchManager : MonoBehaviour
                     float songTime = musicSource.time;
                     float diff = GetClosestBeatDifference(songTime);
 
-                    if (diff <= 0.05f)
+                    if (diff <= timingConfig.perfectThreshold)
                     {
-                        score += 3;
+                        score += 5;
                         perfectCombo++;
                         ShowFeedback("Perfect!", new Color(1f, 0.95f, 0.4f), new Color(0.4f, 0.3f, 0f));
                         if (perfectCombo >= 3)
                             ShowComboText("Perfect x" + perfectCombo + "!");
                     }
-                    else if (diff <= 0.1f)
+                    else if (diff <= timingConfig.greatThreshold)
                     {
-                        score += 2;
+                        score += 3;
                         perfectCombo = 0;
                         ShowFeedback("Great!", new Color(0f, 1f, 1f), new Color(0f, 0.3f, 0.5f));
                     }
-                    else if (diff <= 0.2f)
+                    else if (diff <= timingConfig.goodThreshold)
                     {
                         score += 1;
                         perfectCombo = 0;
@@ -61,7 +62,7 @@ public class TouchManager : MonoBehaviour
                         perfectCombo = 0;
                         ShowFeedback("Miss!", Color.red, new Color(0.3f, 0f, 0f));
                     }
-
+                                        
                     UpdateScoreUI();
                     hitSuccess = true;
                     break;
