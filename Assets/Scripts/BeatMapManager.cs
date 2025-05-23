@@ -1,19 +1,17 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class BeatMapManager : MonoBehaviour
 {
     public AudioSource musicSource;
-    public Transform circle;
-    public Transform targetZone;
     public string beatmapFile = "beatmap.json";
-    public float rotationPerBeat = 30f;
+    public GameObject beatPrefab;
 
-    public List<float> activeBeats { get; private set; } = new List<float>();
+    public float spawnRadius = 3f;
+    public float beatSpeed = 1.5f;
 
     private List<float> beatTimes;
     private int currentBeatIndex = 0;
-    private float totalRotation = 0f;
 
     void Start()
     {
@@ -25,7 +23,6 @@ public class BeatMapManager : MonoBehaviour
         }
 
         beatTimes = beatData.beats;
-        activeBeats = beatData.beats;
         musicSource.Play();
     }
 
@@ -38,22 +35,19 @@ public class BeatMapManager : MonoBehaviour
 
         if (songTime >= beatTimes[currentBeatIndex])
         {
-            totalRotation += rotationPerBeat;
-
-            // Mutlak rotasyon veriyoruz → kayma olmaz
-            circle.localRotation = Quaternion.Euler(0f, 0f, -totalRotation);
-
+            SpawnBeat();
             currentBeatIndex++;
         }
     }
 
-    void LateUpdate()
+    void SpawnBeat()
     {
-        if (targetZone != null)
-        {
-            targetZone.localPosition = new Vector3(0f, 0.5f, 0f); // zorla sabit tut
-            targetZone.localRotation = Quaternion.identity;       // açısını sıfırla
-        }
-    }
+        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+        Vector3 spawnPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * spawnRadius;
 
+        GameObject beatObj = Instantiate(beatPrefab, spawnPos, Quaternion.identity);
+        BeatObject bo = beatObj.GetComponent<BeatObject>();
+        bo.targetPosition = Vector3.zero;
+        bo.speed = beatSpeed;
+    }
 }
