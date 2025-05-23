@@ -51,12 +51,23 @@ public class BeatMapManager : MonoBehaviour
 
     void SpawnBeat()
     {
+        if (beatPrefab == null)
+        {
+            Debug.LogError("beatPrefab is NULL! Make sure it's loaded from Resources.");
+            return;
+        }
+
         float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         Vector3 spawnPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * spawnRadius;
 
         GameObject beatObj = Instantiate(beatPrefab, spawnPos, Quaternion.identity);
-        BeatObject bo = beatObj.GetComponent<BeatObject>();
 
+        // Özel scale değeri
+        beatObj.transform.localScale = new Vector3(0.1f, 0.1f, 1f);
+        beatObj.layer = LayerMask.NameToLayer("Default");
+        Debug.Log("SPAWNED BEAT at: " + spawnPos);
+
+        BeatObject bo = beatObj.GetComponent<BeatObject>();
         if (bo != null)
         {
             bo.targetPosition = Vector3.zero;
