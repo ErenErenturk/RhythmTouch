@@ -5,17 +5,24 @@ using System.IO;
 using UnityEngine.Networking;
 
 [System.Serializable]
-public class BeatData
+public class BeatEntry
 {
-    public float bpm;
-    public List<float> beats;
+    public float time;
+    public string type;
+}
+
+[System.Serializable]
+public class BeatMapWrapper
+{
+    public List<BeatEntry> beats;
 }
 
 public class BeatMapLoader : MonoBehaviour
 {
-    public static IEnumerator LoadBeatMap(string filename, System.Action<BeatData> onComplete)
+    public static IEnumerator LoadBeatMap(string filename, System.Action<List<BeatEntry>> onComplete)
     {
         string path = Path.Combine(Application.streamingAssetsPath, filename);
+        string json = null;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
         UnityWebRequest request = UnityWebRequest.Get(path);
@@ -28,7 +35,7 @@ public class BeatMapLoader : MonoBehaviour
             yield break;
         }
 
-        string json = request.downloadHandler.text;
+        json = request.downloadHandler.text;
 #else
         if (!File.Exists(path))
         {
@@ -37,7 +44,7 @@ public class BeatMapLoader : MonoBehaviour
             yield break;
         }
 
-        string json = File.ReadAllText(path);
+        json = File.ReadAllText(path);
 #endif
 
         if (string.IsNullOrEmpty(json))
@@ -47,7 +54,9 @@ public class BeatMapLoader : MonoBehaviour
             yield break;
         }
 
-        BeatData data = JsonUtility.FromJson<BeatData>(json);
-        onComplete(data);
+        // BeatEntry listesi doğrudan parse edilemiyor → bir wrapper içine sarıyoruz
+        string wrappedJson = "{\"beats\":" + json + "}";
+        BeatMapWrapper data = JsonUtility.FromJson<BeatMapWrapper>(wrappedJson);
+        onComplete(data.beats);
     }
 }

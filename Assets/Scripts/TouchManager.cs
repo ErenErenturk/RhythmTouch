@@ -4,6 +4,8 @@ using System.Collections;
 
 public class TouchManager : MonoBehaviour
 {
+    public static TouchManager Instance { get; private set; } // Singleton erişimi
+
     public float hitRadius = 0.5f;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI feedbackText;
@@ -16,6 +18,15 @@ public class TouchManager : MonoBehaviour
     private int perfectCombo = 0;
     private Coroutine feedbackCoroutine;
     private Coroutine comboCoroutine;
+
+    void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
+
 
     void Update()
     {
@@ -62,7 +73,7 @@ public class TouchManager : MonoBehaviour
                         perfectCombo = 0;
                         ShowFeedback("Miss!", Color.red, new Color(0.3f, 0f, 0f));
                     }
-                                        
+
                     UpdateScoreUI();
                     hitSuccess = true;
                     break;
@@ -82,9 +93,9 @@ public class TouchManager : MonoBehaviour
     float GetClosestBeatDifference(float songTime)
     {
         float closest = float.MaxValue;
-        foreach (float beat in beatMapManager.activeBeats)
+        foreach (var beat in beatMapManager.beatEntries)
         {
-            float diff = Mathf.Abs(beat - songTime);
+            float diff = Mathf.Abs(beat.time - songTime);
             if (diff < closest)
                 closest = diff;
         }
@@ -177,4 +188,11 @@ public class TouchManager : MonoBehaviour
         comboText.text = "";
         comboText.transform.localScale = Vector3.one;
     }
+    public void ResetCombo()
+    {
+        perfectCombo = 0;
+        ShowFeedback("Combo Broken!", Color.gray, Color.black);
+        UpdateScoreUI();
+    }
+
 }

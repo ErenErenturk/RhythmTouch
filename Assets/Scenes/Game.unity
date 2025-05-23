@@ -1049,7 +1049,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+  beatTime: 0
   targetPosition: {x: 0, y: 0, z: 0}
+  type: 0
 --- !u!58 &1621042959
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1168,7 +1170,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 837044486}
   beatmapFile: beatmap.json
-  drumTemplate: {fileID: 1621042956}
   spawnRadius: 3
   beatSpeed: 1.5
 --- !u!4 &1900632223
