@@ -24,17 +24,6 @@ public class TouchManager : MonoBehaviour
             clickPos.z = 0f;
 
             Collider2D[] hits = Physics2D.OverlapCircleAll(clickPos, hitRadius);
-
-            float songTime = musicSource.time;
-            float closestDiff = float.MaxValue;
-
-            foreach (float beat in beatMapManager.activeBeats)
-            {
-                float diff = Mathf.Abs(beat - songTime);
-                if (diff < closestDiff)
-                    closestDiff = diff;
-            }
-
             bool hitSuccess = false;
 
             foreach (var hit in hits)
@@ -43,8 +32,10 @@ public class TouchManager : MonoBehaviour
                 if (beat != null)
                 {
                     beat.MarkAsHit();
+                    float songTime = musicSource.time;
+                    float diff = GetClosestBeatDifference(songTime);
 
-                    if (closestDiff <= 0.05f)
+                    if (diff <= 0.05f)
                     {
                         score += 3;
                         perfectCombo++;
@@ -52,13 +43,13 @@ public class TouchManager : MonoBehaviour
                         if (perfectCombo >= 3)
                             ShowComboText("Perfect x" + perfectCombo + "!");
                     }
-                    else if (closestDiff <= 0.1f)
+                    else if (diff <= 0.1f)
                     {
                         score += 2;
                         perfectCombo = 0;
                         ShowFeedback("Great!", new Color(0f, 1f, 1f), new Color(0f, 0.3f, 0.5f));
                     }
-                    else if (closestDiff <= 0.2f)
+                    else if (diff <= 0.2f)
                     {
                         score += 1;
                         perfectCombo = 0;
@@ -87,6 +78,18 @@ public class TouchManager : MonoBehaviour
         }
     }
 
+    float GetClosestBeatDifference(float songTime)
+    {
+        float closest = float.MaxValue;
+        foreach (float beat in beatMapManager.activeBeats)
+        {
+            float diff = Mathf.Abs(beat - songTime);
+            if (diff < closest)
+                closest = diff;
+        }
+        return closest;
+    }
+
     void UpdateScoreUI()
     {
         scoreText.text = "Score: " + score;
@@ -106,11 +109,10 @@ public class TouchManager : MonoBehaviour
         feedbackText.faceColor = faceColor;
         feedbackText.fontMaterial.SetColor("_UnderlayColor", underlayColor);
         feedbackText.alpha = 1;
-
         feedbackText.transform.localScale = Vector3.zero;
+
         float punchTime = 0.15f;
         float elapsed = 0f;
-
         while (elapsed < punchTime)
         {
             float t = elapsed / punchTime;

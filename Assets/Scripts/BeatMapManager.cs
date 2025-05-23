@@ -5,12 +5,11 @@ public class BeatMapManager : MonoBehaviour
 {
     public AudioSource musicSource;
     public string beatmapFile = "beatmap.json";
-    public GameObject drumTemplate; // sahne içinden sürüklenerek atanacak
+    public GameObject drumTemplate;
     public float spawnRadius = 3f;
     public float beatSpeed = 1.5f;
 
     public List<float> activeBeats { get; private set; } = new List<float>();
-
     private List<float> beatTimes;
     private int currentBeatIndex = 0;
 
@@ -18,11 +17,15 @@ public class BeatMapManager : MonoBehaviour
     {
         if (drumTemplate == null)
         {
-            Debug.LogError("DrumTemplate referansı eksik. Sahneye yerleştirip BeatMapManager'a bağlamalısın.");
+            Debug.LogError("DrumTemplate referansı eksik.");
             return;
         }
 
-        var beatData = BeatMapLoader.LoadBeatMap(beatmapFile);
+        StartCoroutine(BeatMapLoader.LoadBeatMap(beatmapFile, OnBeatMapLoaded));
+    }
+
+    void OnBeatMapLoaded(BeatData beatData)
+    {
         if (beatData == null)
         {
             Debug.LogError("Beat data couldn't be loaded.");

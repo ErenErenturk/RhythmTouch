@@ -10,18 +10,21 @@ public class BeatObject : MonoBehaviour
     {
         if (isHit) return;
 
+        // Hareket
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
 
-        // Hedefe ulaştı ama tıklanmadıysa yok et
+        // Hedefe ulaştıysa ve vurulmadıysa log + destroy (geçici kapalı)
         if (Vector3.Distance(transform.position, targetPosition) < 0.05f)
         {
-            Destroy(gameObject);
+            Debug.Log("Beat reached center but not hit: " + gameObject.name);
+            // Destroy(gameObject); // Test sürecinde kapalı
         }
     }
 
     public void MarkAsHit()
     {
         isHit = true;
+        Debug.Log("Beat hit: " + gameObject.name);
         Destroy(gameObject);
     }
 }
