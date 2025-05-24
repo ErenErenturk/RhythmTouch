@@ -832,7 +832,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &370337699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4077,6 +4077,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1701565195}
   - component: {fileID: 1701565196}
+  - component: {fileID: 1701565197}
   m_Layer: 5
   m_Name: "Mus\u0131cSource"
   m_TagString: Untagged
@@ -4199,6 +4200,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1701565197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1701565194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d5f5802ea8d214e841c62ea56967fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1722224017
 GameObject:
   m_ObjectHideFlags: 0
